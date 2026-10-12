@@ -1,6 +1,5 @@
 # 1. Inisialisasi Library dan Konfigurasi
-# Instal library (jalankan sekali di terminal): pip install pandas matplotlib openpyxl
-import pandas as pd, matplotlib.pyplot as plt
+import numpy as np, pandas as pd, matplotlib.pyplot as plt
 
 plt.rcParams.update({"font.family": "sans-serif", "font.size": 9.5, "figure.facecolor": "white",
                      "axes.spines.top": False, "axes.spines.right": False, "savefig.dpi": 300, "savefig.bbox": "tight"})
@@ -26,7 +25,7 @@ t["IQR"] = t["75%"] - t["25%"]
 t["batas_bawah"] = t["25%"] - 1.5 * t["IQR"]
 t["batas_atas"] = t["75%"] + 1.5 * t["IQR"]
 t["n_outlier"] = ((v < t["batas_bawah"]) | (v > t["batas_atas"])).sum()
-print(t.round(3).T)
+print(t.round(3).T.to_string(float_format=lambda x: f"{x:,.0f}" if x == int(x) else f"{x:.3f}"))
 
 # 4. Distribusi Frekuensi, Peluang Empiris, dan Peluang Bersyarat
 for c, k in [(H, 7), (S, 8)]:
@@ -56,7 +55,7 @@ fig.savefig("grafik1_peluang_kategori.png")
 # Grafik 2: boxplot Performance Index menurut jam belajar dan jam tidur
 fig, axs = plt.subplots(1, 2, figsize=(10, 3.6))
 for ax, c, n in zip(axs, (H, S), ("Jam Belajar", "Jam Tidur")):
-    k = sorted(df[c].unique())
+    k = np.sort(df[c].unique())
     ax.boxplot([df.loc[df[c] == i, Y] for i in k], tick_labels=k, patch_artist=True,
                boxprops={"facecolor": "white"}, medianprops={"color": "gray"})
     ax.set(title=f"Performance Index menurut {n}", xlabel=n, ylabel=Y)
